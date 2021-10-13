@@ -4,7 +4,7 @@ lambda <- 0.4/n ## an overall viral infectivity parameter
 ne <- 10 ## initially exposed individuals
 pei <- 1/3 ## a daily probability that exposed persons enter the infectious state
 pir <- 1/5 ## a daily probablity that infectious people leave this state
-nd <- 100 ## number of days
+nd <- 150 ## number of days
 S <- E <- I <- R <- inew <- rep(0,nd) ## set up storage for pop in each state
 inew[1] <- NA ## we cannot caculate the new infections in day1
 ## beta[i] is a relative contact rate with others the ith person in the whole population has.
@@ -19,9 +19,8 @@ system.time(for (i in 2:nd) {
   ##on the second day
   u <- runif(n) ## uniform random deviates
   x[x==2&u<pir] <- 3 ## I -> R
+  x[x==0&u<lambda*beta*sum(beta[x==2])] <- 1 ## S -> E, now we allow a person to enter I on the day entering E
   x[x==1&u<pei] <- 2 ## E -> I
-  x[x==0&u<lambda*beta*sum(beta[x==2])] <- 1 ## S -> E
-  ## but how can we know the beta is matched with x?...
   S[i] <- sum(x==0); E[i] <- sum(x==1)
   I[i] <- sum(x==2); R[i] <- sum(x==3)
   inew[i] <- I[i] - I[i-1] ## store the new infections of dayi in the whole pop
