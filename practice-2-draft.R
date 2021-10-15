@@ -15,19 +15,19 @@ x <- rep(0,n) ## initialize to susceptible state
 x[sample((1:length(x)), 10)] <- 1 ## start the epidemic by setting ne randomly chosen people to the E stat                                                  
 random_sample <- sample(1:n, size = 0.001*n) ## a random sample of 0:1% of the population
 
-system.time(for (i in 2:nd) {
+for (i in 2:nd) {
   ##on the second day
   u <- runif(n) ## uniform random deviates
   x[x==2&u<pir] <- 3 ## I -> R
   x[x==1&u<pei] <- 2 ## E -> I
-  x[x==0&u<lambda*beta*sum(beta[x==2])] <- 1 ## S -> E
+  x[x==0&u<lambda*beta*sum(beta[x==2|x==1])] <- 1 ## S -> E
   I[i] <- sum(x==2); ## infections of the whole pop on this day
   I_lb[i] <- sum(x==2&beta<quantile(beta,0.1)) ## infections of the 10% of the pop with lowest beta
   I_r[i] <- sum(x[random_sample]==2) ## infections of a random sample of 0.1% of the population
   inew[i] <- I[i] - I[i-1] ## store the new infections of dayi in the whole pop
   inew_lb[i] <- I_lb[i] - I_lb[i-1] ## store the new infections of dayi in the 10% of the pop with lowest beta
   inew_r[i] <- I_r[i] -I_r[i-1] ## store the new infections of dayi of a random sample of 0.1% of the population
-})
+}
 
 ## if S->E is ahead of IR and EI, the epidemic develops and stops much more quickly,
 ## with peaks over 280000 appear between 30th and 40th days. Conversely, the peaks
