@@ -36,5 +36,20 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
 } ## Epidemic
 
 epi <- epidemic()
-epi$inew
+
+## standardise the data
+inew_s <- epi$inew/1e4
+inew_lb_s <- epi$inew_lb/1e3
+inew_r_s <- epi$inew_r/5e1
+
+par(mfcol=c(1,1))
+plot(inew_s,ylim=c(0,max(inew_s)),xlab="day",ylab="N", type = 'l', col=1) ## pop daily new infections (black)
+lines(inew_lb_s,col=4) ## cautious 10% new daily infections (blue)
+lines(inew_r_s,col=2) ## 0.1% random sample new daily infections
+legend("topleft", legend = c("whole poplation per 10000","cautious 10% per 1000","0.1% random sample per 50"), 
+lwd = 4, col = c(1,4,2), cex = 1.2, title = "New daily infections", bty = "n")
+## label the day on which each trajectory peaks.
+text(which.max((inew_s)),max(inew_s), labels = paste("peak on day", which.max((inew_s))), col=1, adj=0)
+text(which.max((inew_lb_s)),max(inew_lb_s), labels = paste("peak on day", which.max((inew_lb_s))), col=4, adj=0)
+text(which.max((inew_r_s)),max(inew_r_s), labels = paste("peak on day", which.max((inew_r_s))), col=2, adj=0)
 
