@@ -12,6 +12,7 @@
 ## the results are visualized.
 ##
 ## Algorithm details
+## *****************
 ## 1. The initial susceptible population of size 5.5 million is set, and 10 randomly chosen people 
 ##    are set to the exposed (E) state.
 ## 2. Once exposed, people have a daily daily probability 1/3 entering the infectious (I) state.
