@@ -50,7 +50,7 @@ plot_10[1][[1]]$inew
 ## standardise the data
 inew_s <- epi$inew/1e4
 inew_lb_s <- epi$inew_lb/1e3
-inew_r_s <- epi$inew_r/5e1
+inew_r_s <- epi$inew_r/1e1
 
 par(mfcol=c(1,1))
 plot(inew_s,ylim=c(0,max(inew_s)),xlab="day",ylab="N", type = 'l', col=1) ## pop daily new infections (black)
