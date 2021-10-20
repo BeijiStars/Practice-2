@@ -21,7 +21,7 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
   for (i in 2:nd) { ## loop over days
     u <- runif(n) ## uniform random deviates
     x[x==2&u<pir] <- 3 ## I -> R
-    x[x==0&u<lambda*beta*sum(beta[x==2|x==1])] <- 1 ## S -> E
+    x[x==0&u<lambda*beta*sum(beta[x==2])] <- 1 ## S -> E
     x[x==1&u<pei] <- 2 ## E -> I
     E[i] <- sum(x==1) ## exposed people of the whole pop on this day
     I[i] <- sum(x==2) ## infectious people of the whole pop on this day
@@ -39,7 +39,13 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
   list(inew=inew,inew_lb=inew_lb,inew_r=inew_r)
 } ## Epidemic
 
-epi <- epidemic()
+#epi <- epidemic()
+
+set.seed(123)
+system.time(plot_10 <- lapply(rep(5.5e6,10), epidemic))
+plot_10[1][[1]]$inew
+
+
 
 ## standardise the data
 inew_s <- epi$inew/1e4
