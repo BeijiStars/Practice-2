@@ -35,7 +35,10 @@
 ##    each day.
 ## 6  The new infections on day i (i>1) for three populations are then caculated by summing the differences
 ##    between E state and I state, and then plus the increase of number of individuals in R state.
-
+## 7  In order for the 3 curves to be displayed in one graph, they need to be divided 
+##    by their own sample size in order to be normalised.
+## 8  Simulation 10 was repeated, placing the 3 curves in 3 separate graphs to compare their fluctuations 
+##    and thus explain the impact of using the ZOE app on the infection trajectory.
 
 ##  Step1 
 ##  write the function epidemic
@@ -83,6 +86,7 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
   ## new infections of each day in the 10% of the pop with lowest beta
   inew_r[-1] <- E_r[-1] - E_r[-nd] + I_r[-1] -I_r[-nd]+ (R_r[-1]-R_r[-nd]) 
   ## new infections of each day of a random sample of 0.1% of the populatio
+
   list(inew=inew,inew_lb=inew_lb,inew_r=inew_r)
 } ## Epidemic
 
@@ -120,23 +124,28 @@ title("New daily infections")
 set.seed(10)
 simulate_10 <- lapply(rep(5.5e6,10), epidemic) ## running 10 replicate simulations and return a list
 
-## plot daily infections trajectories in three samples respectively
-plot(simulate_10[[1]]$inew,xlab="day",ylab="N", type = 'l', col=1)
+##  plot daily infections trajectories in three samples respectively
+##  plot 10 waves of the whole pop
+plot(simulate_10[[1]]$inew,xlab="day",ylab="N", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew)))),
+ type = 'l', col=1)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew)
 }
 title("10 times simulation of the whole poplation")
-plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="N", type = 'l', col=4)
+##  plot 10 waves of the 10% cautious pop
+plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="N",ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_lb)))),
+ type = 'l', col=4)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_lb, col=4)
 }
 title("10 times simulation of the 10% of the population with lowest beta")
-plot(simulate_10[[1]]$inew_r,xlab="day",ylab="N", type = 'l', col='brown')
+##  plot 10 waves of a random sample of 0.1% whole pop
+plot(simulate_10[[1]]$inew_r,xlab="day",ylab="N", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_r)))), 
+type = 'l', col='brown')
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_r, col='brown')
 }
 title("10 times simulation of a random sample of 0.1% of the population")
-
 
 ##  Step4
 ##  Analyze the implications of these results to the ZOE app data.
