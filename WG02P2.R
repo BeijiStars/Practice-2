@@ -80,11 +80,11 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
     R_r[i] <- sum(x[random_sample]==3) ## recoveries of a random sample of 0.1% of the population
   }
   
-  inew[-1] <- E[-1] - E[-nd] + I[-1] - I[-nd] + (R[-1]-R[-nd]) 
+  inew[-1] <- E[-1] + I[-1] - (E[-nd] + I[-nd]) + (R[-1]-R[-nd]) 
   ## new infections of each day in the whole pop
-  inew_lb[-1] <- E_lb[-1] - E_lb[-nd] + I_lb[-1] - I_lb[-nd] + (R_lb[-1]-R_lb[-nd]) 
+  inew_lb[-1] <- E_lb[-1] + I_lb[-1] - (E_lb[-nd] + I_lb[-nd]) + (R_lb[-1]-R_lb[-nd])
   ## new infections of each day in the 10% of the pop with lowest beta
-  inew_r[-1] <- E_r[-1] - E_r[-nd] + I_r[-1] -I_r[-nd]+ (R_r[-1]-R_r[-nd]) 
+  inew_r[-1] <- E_r[-1] + I_r[-1] - (E_r[-nd] + I_r[-nd]) + (R_r[-1]-R_r[-nd]) 
   ## new infections of each day of a random sample of 0.1% of the populatio
   
   list(inew=inew,inew_lb=inew_lb,inew_r=inew_r)
@@ -96,15 +96,16 @@ epi <- epidemic() ## simulate epidemic
 ##  Step2
 ##  Standardise and plot the daily infections trajectories
 
-##  Normalized new infections in three samples（whole pop ,10% cautious and 0.1% random sample)
+##  Standarlize new infections in three samples（whole pop ,10% cautious and 0.1% random sample)
+## It means the number of infections per 100 people.
 population <- 5.5e6
-inew_s <- epi$inew/population
-inew_lb_s <- epi$inew_lb/(population * 0.1)
-inew_r_s <- epi$inew_r/(population * 0.001)
+inew_s <- 100*epi$inew/population
+inew_lb_s <- 100*epi$inew_lb/(population * 0.1)
+inew_r_s <- 100*epi$inew_r/(population * 0.001)
 
 ##  plot the daily infections trajectories in three samples (one simulate)
-par(mfcol=c(2,2)) 
-plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlim=c(0,120),xlab="day",ylab="daily new infections", type = 'l', col=1) 
+par(mfcol=c(2,2),mar=c(2,2,4,2)) 
+plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlim=c(0,120),xlab="Day",ylab="Daily new infections per 100", type = 'l', col=1) 
 ## pop daily new infections (black)
 lines(inew_lb_s,col=4) ## cautious 10% new daily infections (blue)
 lines(inew_r_s,col='brown') ## 0.1% random sample new daily infections
@@ -122,30 +123,30 @@ text(which.max((inew_r_s)),max(inew_r_s), labels = paste("Peak on day", which.ma
 ##  Step3
 ##  Running 10 replicate simulations and plot results
 
-simulate_10 <- lapply(rep(5.5e6,10), epidemic) ## running 10 replicate simulations and return a list
+#simulate_10 <- lapply(rep(5.5e6,10), epidemic) ## running 10 replicate simulations and return a list
 
 ##  plot daily infections trajectories in three samples respectively
 ##  plot 10 waves of the whole pop
-plot(simulate_10[[1]]$inew,xlab="day",ylab="daily new infections", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew)))),
+plot(simulate_10[[1]]$inew,xlab="day",ylab="Daily new infections", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew)))),
      type = 'l', col=1)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew)
 }
-title("10 times simulation of the whole poplation")
+title("10 times simulation of\n the whole poplation")
 ##  plot 10 waves of the 10% cautious pop
 plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="daily new infections",ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_lb)))),
      type = 'l', col=4)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_lb, col=4)
 }
-title("10 times simulation of the 10% of the population with lowest beta")
+title(strwrap("10 times simulation of the 10% of the population with lowest beta",width = 30))
 ##  plot 10 waves of a random sample of 0.1% whole pop
 plot(simulate_10[[1]]$inew_r,xlab="day",ylab="daily new infections", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_r)))), 
      type = 'l', col='brown')
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_r, col='brown')
 }
-title("10 times simulation of a random sample of 0.1% of the population")
+title(strwrap("10 times simulation of a random sample of 0.1% of the population",width = 30))
 
 
 ##  Step4
@@ -158,6 +159,23 @@ title("10 times simulation of a random sample of 0.1% of the population")
 ##     The infection peak of 10% cautious population with low beta values is about 
 ##     2-5 days later than the peak of whole population and the peak of 0.1% random sample.
 
-#### 2 The number of infections reconstructed using the ZOE app data is highly likely to be less than others. 
+#### 2 The number of infections per 100 people in the population reconstructed from the ZOE app data was 
+##     significantly smaller than in the total population. 
 ##     The infection curve for the 10% cautious population with low beta valiue is much lower than 
 ##     the infection curves for the whole population and the 0.1% random sample (especially near the infection peak).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
