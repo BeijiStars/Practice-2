@@ -119,7 +119,6 @@ text(which.max((inew_lb_s)),max(inew_lb_s), labels = paste("Peak on day", which.
 text(which.max((inew_r_s)),max(inew_r_s), labels = paste("Peak on day", which.max((inew_r_s))), col='brown', adj=-0.05, cex = 0.5)
 
 
-
 ##  Step3
 ##  Running 10 replicate simulations and plot results
 
