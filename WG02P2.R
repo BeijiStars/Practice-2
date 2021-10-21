@@ -1,3 +1,6 @@
+##By Group 02： Huanyu Su(s2171849), Mia Wu(s2025818), Peiran Zhang(s2184444)
+##Github Repo URL: https://github.com/BeijiStars/Practice-2
+
 ## Overview
 ## ********
 ## The aim is to simulate an epidemic in a large population for 100 days, and try 
@@ -68,13 +71,6 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
   list(inew=inew,inew_lb=inew_lb,inew_r=inew_r)
 } ## Epidemic
 
-#epi <- epidemic()
-
-set.seed(123)
-plot_10 <- lapply(rep(5.5e6,10), epidemic)
-plot_10[1][[1]]$inew
-
-
 
 ## standardise the data
 inew_s <- epi$inew/1e4
@@ -91,3 +87,9 @@ lwd = 4, col = c(1,4,2), cex = 1.2, title = "New daily infections", bty = "n")
 text(which.max((inew_s)),max(inew_s), labels = paste("peak on day", which.max((inew_s))), col=1, adj=0)
 text(which.max((inew_lb_s)),max(inew_lb_s), labels = paste("peak on day", which.max((inew_lb_s))), col=4, adj=0)
 text(which.max((inew_r_s)),max(inew_r_s), labels = paste("peak on day", which.max((inew_r_s))), col=2, adj=0)
+
+
+#epi <- epidemic()
+set.seed(123)
+plot_10 <- lapply(rep(5.5e6,10), epidemic)
+plot_10[1][[1]]$inew
