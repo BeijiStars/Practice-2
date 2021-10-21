@@ -82,7 +82,7 @@ inew_s <- epi$inew/population
 inew_lb_s <- epi$inew_lb/(population * 0.1)
 inew_r_s <- epi$inew_r/(population * 0.001)
 
-par(mfcol=c(1,1))
+par(mfcol=c(4,1))
 plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlab="day",ylab="N / population", type = 'l', col=1) ## pop daily new infections (black)
 lines(inew_lb_s,col=4) ## cautious 10% new daily infections (blue)
 lines(inew_r_s,col='brown') ## 0.1% random sample new daily infections
@@ -99,20 +99,25 @@ set.seed(10) ## Set random seeds to ensure that the simulation is reproducible.
 simulate_10 <- lapply(rep(5.5e6,10), epidemic)
 par(mfcol=c(3,1))
 ## plot 10 waves of the whole pop
-plot(simulate_10[[1]]$inew,xlab="day",ylab="N", type = 'l', col=1)
+plot(simulate_10[[1]]$inew,xlab="day",ylab="N", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew)))),
+ type = 'l', col=1)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew)
 }
 title("10 times simulation of the whole poplation")
 ## plot 10 waves of the 10% more cautious pop
-plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="N", type = 'l', col=4)
+plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="N",ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_lb)))),
+ type = 'l', col=4)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_lb, col=4)
 }
 title("10 times simulation of the 10% of the population with lowest beta")
 ## plot 10 waves of a random sample of 0.1% whole pop
-plot(simulate_10[[1]]$inew_r,xlab="day",ylab="N", type = 'l', col='brown')
+plot(simulate_10[[1]]$inew_r,xlab="day",ylab="N", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_r)))), 
+type = 'l', col='brown')
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_r, col='brown')
 }
 title("10 times simulation of a random sample of 0.1% of the population")
+
+
