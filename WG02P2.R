@@ -104,14 +104,14 @@ inew_lb_s <- 100*epi$inew_lb/(population * 0.1)
 inew_r_s <- 100*epi$inew_r/(population * 0.001)
 
 ##  plot the daily infections trajectories in three samples (one simulate)
-par(mfcol=c(2,2),mar=c(2,2,4,2)) 
+par(mfcol=c(2,2),mar=c(2,2.5,4,2)) 
 plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlim=c(0,120),xlab="Day",ylab="Daily new infections per 100", type = 'l', col=1) 
 ## pop daily new infections (black)
 lines(inew_lb_s,col=4) ## cautious 10% new daily infections (blue)
 lines(inew_r_s,col='brown') ## 0.1% random sample new daily infections
 legend("topleft", legend = c("whole poplation","cautious 10%","0.1% random sample"), 
        lwd = 4, col = c(1,4,'brown'), cex = 0.4, bty = "n")
-title("New daily infections")
+title("New daily infections", cex.main=0.9)
 
 ## label the day on which each trajectory peaks
 text(which.max((inew_s)),max(inew_s), labels = paste("Peak on day", which.max((inew_s))), col=1, adj=-0.25, cex = 0.5)
@@ -123,7 +123,7 @@ text(which.max((inew_r_s)),max(inew_r_s), labels = paste("Peak on day", which.ma
 ##  Step3
 ##  Running 10 replicate simulations and plot results
 
-#simulate_10 <- lapply(rep(5.5e6,10), epidemic) ## running 10 replicate simulations and return a list
+simulate_10 <- lapply(rep(5.5e6,10), epidemic) ## running 10 replicate simulations and return a list
 
 ##  plot daily infections trajectories in three samples respectively
 ##  plot 10 waves of the whole pop
@@ -132,21 +132,21 @@ plot(simulate_10[[1]]$inew,xlab="day",ylab="Daily new infections", ylim=c(0, max
 for (i in 2:10){
   lines(simulate_10[[i]]$inew)
 }
-title("10 times simulation of\n the whole poplation")
+title("10 times simulation of\n the whole poplation",cex.main=0.9)
 ##  plot 10 waves of the 10% cautious pop
 plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="daily new infections",ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_lb)))),
      type = 'l', col=4)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_lb, col=4)
 }
-title(strwrap("10 times simulation of the 10% of the population with lowest beta",width = 30))
+title(strwrap("10 times simulation of the 10% of the population with lowest beta",width = 30),cex.main=0.9)
 ##  plot 10 waves of a random sample of 0.1% whole pop
 plot(simulate_10[[1]]$inew_r,xlab="day",ylab="daily new infections", ylim=c(0, max(sapply(simulate_10,function(x) max(x$inew_r)))), 
      type = 'l', col='brown')
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_r, col='brown')
 }
-title(strwrap("10 times simulation of a random sample of 0.1% of the population",width = 30))
+title(strwrap("10 times simulation of a random sample of 0.1% of the population",width = 30),cex.main=0.9)
 
 
 ##  Step4
@@ -163,19 +163,6 @@ title(strwrap("10 times simulation of a random sample of 0.1% of the population"
 ##     significantly smaller than in the total population. 
 ##     The infection curve for the 10% cautious population with low beta valiue is much lower than 
 ##     the infection curves for the whole population and the 0.1% random sample (especially near the infection peak).
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
