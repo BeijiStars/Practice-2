@@ -30,7 +30,10 @@
 ##    each day.
 ## 6. The new infections on day i (i>1) for three populations are then caculated by summing the differences
 ##    between E state and I state, and then plus the increase of number of individuals in R state.
-## 7.
+## 7. In order for the 3 curves to be displayed in one graph, they need to be divided 
+##    by their own sample size in order to be normalised.
+## 8. Simulation 10 was repeated, placing the 3 curves in 3 separate graphs to compare their fluctuations 
+##    and thus explain the impact of using the ZOE app on the infection trajectory.
 
 
 epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
@@ -65,9 +68,9 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
     I_r[i] <- sum(x[random_sample]==2) ## infectious people of a random sample of 0.1% of the population
     R_r[i] <- sum(x[random_sample]==3) ## recoveries of a random sample of 0.1% of the population
   }
-  inew[-1] <- E[-1] - E[-nd] + I[-1] - I[-nd] + (R[-1]-R[-nd]) ## new infections of each day in the whole pop
-  inew_lb[-1] <- E_lb[-1] - E_lb[-nd] + I_lb[-1] - I_lb[-nd] + (R_lb[-1]-R_lb[-nd]) ## new infections of each day in the 10% of the pop with lowest beta
-  inew_r[-1] <- E_r[-1] - E_r[-nd] + I_r[-1] -I_r[-nd]+ (R_r[-1]-R_r[-nd]) ## new infections of each day of a random sample of 0.1% of the populatio
+  inew[-1] <- E[-1] + I[-1] - (E[-nd] + I[-nd]) + (R[-1]-R[-nd]) ## new infections of each day in the whole pop
+  inew_lb[-1] <- E_lb[-1] + I_lb[-1] - (E_lb[-nd] + I_lb[-nd]) + (R_lb[-1]-R_lb[-nd]) ## new infections of each day in the 10% of the pop with lowest beta
+  inew_r[-1] <- E_r[-1] + I_r[-1] - (E_r[-nd] + I_r[-nd]) + (R_r[-1]-R_r[-nd]) ## new infections of each day of a random sample of 0.1% of the populatio
   list(inew=inew,inew_lb=inew_lb,inew_r=inew_r)
 } ## Epidemic
 
@@ -80,10 +83,10 @@ inew_lb_s <- epi$inew_lb/(population * 0.1)
 inew_r_s <- epi$inew_r/(population * 0.001)
 
 par(mfcol=c(1,1))
-plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlab="day",ylab="N * 5.5e6", type = 'l', col=1) ## pop daily new infections (black)
+plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlab="day",ylab="N / population", type = 'l', col=1) ## pop daily new infections (black)
 lines(inew_lb_s,col=4) ## cautious 10% new daily infections (blue)
 lines(inew_r_s,col='brown') ## 0.1% random sample new daily infections
-legend("topleft", legend = c("whole poplation","cautious 10%","0.1% random sample"), 
+legend("topleft", legend = c("whole poplation / 5.5e6","cautious 10% / 5.5e5","0.1% random sample / 5.5e3"), 
 lwd = 4, col = c(1,4,'brown'), cex = 0.8, title = "New daily infections", bty = "n")
 ## label the day on which each trajectory peaks.
 text(which.max((inew_s)),max(inew_s), labels = paste("Peak on day", which.max((inew_s))), col=1, adj=-0.25, cex = 0.8)
@@ -92,19 +95,22 @@ text(which.max((inew_r_s)),max(inew_r_s), labels = paste("Peak on day", which.ma
 
 
 #10 replicate simulations and plot 
-set.seed(10)
+set.seed(10) ## Set random seeds to ensure that the simulation is reproducible.
 simulate_10 <- lapply(rep(5.5e6,10), epidemic)
 par(mfcol=c(3,1))
+## plot 10 waves of the whole pop
 plot(simulate_10[[1]]$inew,xlab="day",ylab="N", type = 'l', col=1)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew)
 }
 title("10 times simulation of the whole poplation")
+## plot 10 waves of the 10% more cautious pop
 plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="N", type = 'l', col=4)
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_lb, col=4)
 }
 title("10 times simulation of the 10% of the population with lowest beta")
+## plot 10 waves of a random sample of 0.1% whole pop
 plot(simulate_10[[1]]$inew_r,xlab="day",ylab="N", type = 'l', col='brown')
 for (i in 2:10){
   lines(simulate_10[[i]]$inew_r, col='brown')
