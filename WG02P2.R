@@ -73,13 +73,14 @@ epidemic <- function(n=5500000,ne=10,lambda=0.4/n,pei=1/3,pir=1/5,nd=100) {
 
 
 ## standardise the data
+epi <- epidemic()
 population <- 5.5e6
 inew_s <- epi$inew/population
 inew_lb_s <- epi$inew_lb/(population * 0.1)
 inew_r_s <- epi$inew_r/(population * 0.001)
 
 par(mfcol=c(1,1))
-plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlab="day",ylab="N", type = 'l', col=1) ## pop daily new infections (black)
+plot(inew_s,ylim=c(0,max(inew_s,inew_lb_s,inew_r_s)),xlab="day",ylab="N * 5.5e6", type = 'l', col=1) ## pop daily new infections (black)
 lines(inew_lb_s,col=4) ## cautious 10% new daily infections (blue)
 lines(inew_r_s,col='brown') ## 0.1% random sample new daily infections
 legend("topleft", legend = c("whole poplation","cautious 10%","0.1% random sample"), 
@@ -94,15 +95,18 @@ text(which.max((inew_r_s)),max(inew_r_s), labels = paste("Peak on day", which.ma
 set.seed(10)
 simulate_10 <- lapply(rep(5.5e6,10), epidemic)
 par(mfcol=c(3,1))
-plot(simulate_10[1][[1]]$inew,xlab="day",ylab="N", type = 'l', col=1)
+plot(simulate_10[[1]]$inew,xlab="day",ylab="N", type = 'l', col=1)
 for (i in 2:10){
-  lines(simulate_10[i][[1]]$inew)
+  lines(simulate_10[[i]]$inew)
 }
-plot(simulate_10[1][[1]]$inew_lb,xlab="day",ylab="N", type = 'l', col=4)
+title("10 times simulation of the whole poplation")
+plot(simulate_10[[1]]$inew_lb,xlab="day",ylab="N", type = 'l', col=4)
 for (i in 2:10){
-  lines(simulate_10[i][[1]]$inew_lb, col=4)
+  lines(simulate_10[[i]]$inew_lb, col=4)
 }
-plot(simulate_10[1][[1]]$inew_r,xlab="day",ylab="N", type = 'l', col='brown')
+title("10 times simulation of the 10% of the population with lowest beta")
+plot(simulate_10[[1]]$inew_r,xlab="day",ylab="N", type = 'l', col='brown')
 for (i in 2:10){
-  lines(simulate_10[i][[1]]$inew_r, col='brown')
+  lines(simulate_10[[i]]$inew_r, col='brown')
 }
+title("10 times simulation of a random sample of 0.1% of the population")
