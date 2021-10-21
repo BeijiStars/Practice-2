@@ -93,4 +93,16 @@ text(which.max((inew_r_s)),max(inew_r_s), labels = paste("Peak on day", which.ma
 #10 replicate simulations and plot 
 set.seed(10)
 simulate_10 <- lapply(rep(5.5e6,10), epidemic)
-
+par(mfcol=c(3,1))
+plot(simulate_10[1][[1]]$inew,xlab="day",ylab="N", type = 'l', col=1)
+for (i in 2:10){
+  lines(simulate_10[i][[1]]$inew)
+}
+plot(simulate_10[1][[1]]$inew_lb,xlab="day",ylab="N", type = 'l', col=4)
+for (i in 2:10){
+  lines(simulate_10[i][[1]]$inew_lb, col=4)
+}
+plot(simulate_10[1][[1]]$inew_r,xlab="day",ylab="N", type = 'l', col='brown')
+for (i in 2:10){
+  lines(simulate_10[i][[1]]$inew_r, col='brown')
+}
