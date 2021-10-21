@@ -3,7 +3,7 @@
 
 ## Overview
 ## ********
-## To come up with an epidemic simulation（function, Plots and analysis) in large population in 100 days
+## To come up with an epidemic simulation（function, plots and analysis) in large population in 100 days
 ## and try to answer the following questions: 
 ## 1  what do the daily infection trajectories look like for the 10% of the population 
 ##    with the lowest individual transmission possibilities;
@@ -97,7 +97,7 @@ epi <- epidemic() ## simulate epidemic
 ##  Standardise and plot the daily infections trajectories
 
 ##  Standarlize new infections in three samples（whole pop ,10% cautious and 0.1% random sample)
-## It means the number of infections per 100 people.
+##  It means the number of infections per 100 people.
 population <- 5.5e6
 inew_s <- 100*epi$inew/population
 inew_lb_s <- 100*epi$inew_lb/(population * 0.1)
